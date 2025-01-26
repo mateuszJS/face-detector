@@ -38,11 +38,14 @@ export default class TenserFlowDetector implements Detector {
       await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl")
       await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection")
 
-      this.detector = await window.faceDetection.createDetector("MediaPipeFaceDetector" as unknown as SupportedModels, {
-        runtime: 'mediapipe',
-        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
-        modelType: 'full'
-      });
+      this.detector = await window.faceDetection.createDetector(
+        "MediaPipeFaceDetector" as unknown as SupportedModels,
+        {
+          runtime: 'mediapipe',
+          solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
+          modelType: 'full'
+        }
+      );
     }
 
     if (typeof window !== "undefined") {
@@ -58,7 +61,7 @@ export default class TenserFlowDetector implements Detector {
       faces = await this.detector.estimateFaces(videoEl, estimationConfig);
     } catch(err) {
       // throws internal errors, silence to to don't mix with actionable errors
-      console.log('==========THIS IS AN ERROR===========')
+      console.log('==========THIS IS A KNOWN ERROR===========')
       console.log(err)
     }
 

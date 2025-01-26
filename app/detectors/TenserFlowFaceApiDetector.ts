@@ -16,7 +16,7 @@ function captureVideo(video: HTMLVideoElement) {
 export default class TenserFlowDetector implements Detector {
   constructor() {
     const initFaceDetector = async () => {
-      // await faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+      // await faceapi.nets.tinyFaceDetector.loadFromUri('/models') // left for testing puroses
       await faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
     }
 
@@ -26,9 +26,11 @@ export default class TenserFlowDetector implements Detector {
   }
 
   async detect(videoEl: HTMLVideoElement) {
-
-    const faces = await faceapi.detectAllFaces(captureVideo(videoEl), new faceapi.SsdMobilenetv1Options()).run()
-    // await faceapi.detectAllFaces(input, new faceapi.TinyFaceDetectorOptions())
+    const faces = await faceapi.detectAllFaces(
+      captureVideo(videoEl),
+      new faceapi.SsdMobilenetv1Options()
+    ).run()
+    // await faceapi.detectAllFaces(input, new faceapi.TinyFaceDetectorOptions()) // left for testing purposes
 
     return faces.map(({ box }) => ({
       x: box.x,

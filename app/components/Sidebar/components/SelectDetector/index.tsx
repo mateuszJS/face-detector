@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -6,18 +7,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-// TODO: lazy load all detectors, they might be expensive
+// TODO: lazy load all detectors, they are pretty expensive
 import TenserFlowDetector from '@/app/detectors/TenserFlowDetector';
 import NewestMediapipeDetectorVideo from '@/app/detectors/NewestMediapipeDetectorVideo';
 import NewestMediapipeDetectorImage from '@/app/detectors/NewestMediapipeDetectorImage';
 import TenserFlowFaceApiDetector from '@/app/detectors/TenserFlowFaceApiDetector';
 import Detector from "@/app/detectors/Detector";
-import { useEffect, useState } from "react";
 
 interface DetectorOption {
   label: string
   detector: Detector
   docsLink: string
+  warning?: string
 }
 
 const detectors: Record<string, DetectorOption> = {
@@ -35,6 +36,7 @@ const detectors: Record<string, DetectorOption> = {
     label: 'Google MediaPipe - Video',
     detector: new NewestMediapipeDetectorVideo(),
     docsLink: 'https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector',
+    warning: '⚠️ Works like a life stream - can only analyze frames which are played frame by frame. Throws errors if asked for timestamp from the past. Does not return results if a frame was ommited(when you seek).'
   },
   'mediapipe_image': {
     label: 'Google MediaPipe - Image',
@@ -42,6 +44,7 @@ const detectors: Record<string, DetectorOption> = {
     docsLink: 'https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector',
   }
 }
+
 const defaultDetector = 'tenser_flow_mediapipe_runtime'
 
 interface Props {
@@ -57,13 +60,15 @@ export default function SelectDetector({ setDetector }: Props) {
   }
 
   useEffect(() => {
+    // keep parent updated with current detector
     setDetector(details.detector)
-  }, [details.detector])
+  }, [details.detector, setDetector])
 
   return (
     <div>
+      <p>Model</p>
       <Select onValueChange={onSelectDetector} defaultValue={defaultDetector}>
-        <SelectTrigger className="w-[350px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Theme" />
         </SelectTrigger>
         <SelectContent>
@@ -75,6 +80,9 @@ export default function SelectDetector({ setDetector }: Props) {
       <p className="text-[0.8rem] text-muted-foreground">
         To learn more go to&nbsp;<a target="_blank" href={details.docsLink}>documentation</a>.
       </p>
+      {details.warning && <p className="text-[0.8rem] text-muted-foreground mt-[20px]">
+        {details.warning}
+      </p>}
     </div>
   )
 }

@@ -1,11 +1,20 @@
 import styles from './styles.module.css'
 
-export default function Hero() {
+interface Props {
+  small: boolean
+}
+
+export default function Hero({ small = false }: Props) {
   return (
     <div className="flex justify-center flex-col">
       <div className="">
-        <h1 className={styles.title}>Face Detection</h1>
-        <p>Upload video, chose the detector and became a spy!</p>
+        <h1 className={styles.title}>Face Detector</h1>
+        {!small && (
+          <>
+            <p>Welcome to the state-of-the-art face detection dashboard!</p>
+            <p className="pb-[75px]">Go ahead, upload video, chose the detector.</p>
+          </>
+        )}
       </div>
     </div>
   )

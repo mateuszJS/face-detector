@@ -1,14 +1,14 @@
-"use client";
-
-import { ChangeEvent, DragEvent } from "react";
-import styles from "./styles.module.css";
+import { ChangeEvent, DragEvent, useState } from "react";
 import { cn } from "@/lib/utils";
+import styles from "./styles.module.css";
 
 interface Props {
   onUpload: (file: File) => void;
 }
 
 export default function UploadVideo({ onUpload }: Props) {
+  const [isActive, setIsActive] = useState(false)
+
   const dropHandler = (ev: DragEvent<HTMLLabelElement>) => {
     // TODO: perform validation if we support file's extension
     ev.preventDefault();
@@ -40,6 +40,8 @@ export default function UploadVideo({ onUpload }: Props) {
       <label
         onDrop={dropHandler}
         onDragOver={e => e.preventDefault()}
+        onDragLeave={() => setIsActive(false)}
+        onDragEnter={() => setIsActive(true)}
         className={cn(
           styles.dropZone,
           'h-full',
@@ -52,6 +54,9 @@ export default function UploadVideo({ onUpload }: Props) {
           'items-center',
           'justify-center',
           'cursor-pointer',
+          {
+            [styles.active]: isActive,
+          }
         )}
         htmlFor="input"
       >
