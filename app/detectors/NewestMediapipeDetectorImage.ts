@@ -31,7 +31,8 @@ export default class NewestMediapipeDetector implements Detector {
           vision,
           {
             baseOptions: {
-              modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite"
+              modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+              delegate: "GPU"
             },
             runningMode: 'IMAGE',
             minDetectionConfidence: 0.5, // The minimum confidence score for the face detection to be considered successful.
@@ -46,7 +47,7 @@ export default class NewestMediapipeDetector implements Detector {
 
   async detect(videoEl: HTMLVideoElement) {
     if (!this.detector) return []
-  
+
     const canvas = await captureVideo(videoEl)
     const { detections } = this.detector!.detect(canvas)
     const successfulDetections = detections.filter(detection => detection.boundingBox) as Required<Detection>[]

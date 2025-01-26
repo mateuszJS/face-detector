@@ -32,7 +32,7 @@ export default class NewestMediapipeDetector implements Detector {
   async detect(videoEl: HTMLVideoElement) {
     if (!this.detector || this.lastTime === videoEl.currentTime) return []
     this.lastTime = videoEl.currentTime
-    
+
     const { detections } = await new Promise<FaceDetectorResult>(resolve => {
       resolve(this.detector!.detectForVideo(videoEl, videoEl.currentTime))
     });

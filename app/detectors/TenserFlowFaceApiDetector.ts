@@ -1,6 +1,5 @@
 
 import * as faceapi from 'face-api.js'
-import { FaceDetection } from 'face-api.js';
 import Detector from './Detector';
 
 function captureVideo(video: HTMLVideoElement) {
@@ -27,6 +26,7 @@ export default class TenserFlowDetector implements Detector {
   }
 
   async detect(videoEl: HTMLVideoElement) {
+
     const faces = await faceapi.detectAllFaces(captureVideo(videoEl), new faceapi.SsdMobilenetv1Options()).run()
     // await faceapi.detectAllFaces(input, new faceapi.TinyFaceDetectorOptions())
 
