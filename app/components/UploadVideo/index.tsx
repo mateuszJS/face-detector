@@ -53,7 +53,7 @@ export default function UploadVideo({ onUpload }: Props) {
         </p>
       </label>
       <input
-        className="invisible"
+        className="hidden"
         type="file"
         id="input"
         name="input_video"
