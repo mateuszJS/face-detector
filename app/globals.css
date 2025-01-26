@@ -70,3 +70,23 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+body {
+  --background: #060515;
+  --background-accent-a: rgb(42, 45, 84);
+  --background-accent-c: rgb(15, 48, 94);
+  --background-accent-d: rgb(62, 50, 116);
+  
+  
+  color: white;
+
+  background: 
+    radial-gradient(40vw 40vh at 0% 0%, var(--background-accent-a), transparent),
+    radial-gradient(80vw 50vh at 100% 0%, var(--background-accent-d), transparent),
+    radial-gradient(70vw 50vh at 25% 100%, var(--background-accent-c), transparent),
+    var(--background);
+
+  background-size: contain;
+  background-repeat: no-repeat;
+}

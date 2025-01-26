@@ -2,6 +2,7 @@
 
 import { ChangeEvent, DragEvent } from "react";
 import styles from "./styles.module.css";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onUpload: (file: File) => void;
@@ -39,17 +40,23 @@ export default function UploadVideo({ onUpload }: Props) {
       <label
         onDrop={dropHandler}
         onDragOver={e => e.preventDefault()}
-        className={styles.drop_zone}
+        className={cn(
+          styles.dropZone,
+          'h-full',
+          'w-full',
+          'border-dashed',
+          'border-current',
+          'border-4',
+          'rounded-lg',
+          'flex',
+          'items-center',
+          'justify-center',
+          'cursor-pointer',
+        )}
         htmlFor="input"
-        style={{
-          display: "block",
-          width: 500,
-          height: 500,
-          background: "tomato",
-        }}
       >
         <p>
-          Drag one or more files to this <i>drop zone</i>.
+          Click to upload a video or drag a file here!
         </p>
       </label>
       <input
