@@ -66,7 +66,7 @@ export default function SelectDetector({ setDetector }: Props) {
 
   return (
     <div>
-      <p>Model</p>
+      <p>Detector</p>
       <Select onValueChange={onSelectDetector} defaultValue={defaultDetector}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Theme" />
