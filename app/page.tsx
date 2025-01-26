@@ -40,6 +40,7 @@ export default function Home() {
     <main className={cn(
       'grid',
       'grid-rows-[auto_minmax(200px,1fr)]',
+      'sm:grid-rows-none',
       'sm:grid-cols-2',
       'sm:h-full',
       'p-[20px]',
