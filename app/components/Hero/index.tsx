@@ -12,7 +12,7 @@ export default function Hero({ small = false }: Props) {
         {!small && (
           <>
             <p>Welcome to the state-of-the-art face detection dashboard!</p>
-            <p className="pb-[75px]">Go ahead, upload video, chose the detector.</p>
+            <p className="sm:pb-[75px]">Go ahead, upload video, chose the detector.</p>
           </>
         )}
       </div>

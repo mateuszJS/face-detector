@@ -39,15 +39,19 @@ export default function Home() {
   return (
     <main className={cn(
       'grid',
-      'grid-cols-2',
-      'h-full',
-      'p-[50px]',
+      'grid-rows-[auto_minmax(200px,1fr)]',
+      'sm:grid-cols-2',
+      'sm:h-full',
+      'p-[20px]',
+      'sm:p-[50px]',
       'max-w-[1200px]',
       'mx-auto',
-      'gap-[50px]',
+      'gap-[20px]',
+      'sm:gap-[50px]',
       {
-        'grid-rows-[50px_minmax(300px,1fr)]': isVideo,
-        'grid-cols-[270px_minmax(0,1fr)]': isVideo,
+        'grid-rows-[auto_70px_auto__minmax(300px,1fr)]': isVideo,
+        'sm:grid-rows-[50px_minmax(300px,1fr)]': isVideo,
+        'sm:grid-cols-[270px_minmax(0,1fr)]': isVideo,
         'max-w-[1500px]': isVideo,
       }
     )}>
@@ -55,7 +59,13 @@ export default function Home() {
       <UploadVideo onUpload={onUpload} />
       {isVideo && <Sidebar setDetector={setDetector} exportData={exportData} />}
       <div
-        className={cn('relative', 'place-self-center', 'max-h-[100%]', isVideo ? 'flex' : 'hidden')}
+        className={cn(
+          'relative',
+          'place-self-start',
+          'sm:place-self-center',
+          'max-h-[100%]',
+          isVideo ? 'flex' : 'hidden'
+        )}
         // we use class "hidden" to gather reference to Video ahead of time
         style={{aspectRatio}}
       >

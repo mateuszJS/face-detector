@@ -54,6 +54,8 @@ export default function UploadVideo({ onUpload }: Props) {
           'items-center',
           'justify-center',
           'cursor-pointer',
+          'p-[20px]',
+          'text-center',
           {
             [styles.active]: isActive,
           }
