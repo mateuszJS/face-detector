@@ -1,10 +1,11 @@
 
 import { FaceDetector, FilesetResolver, FaceDetectorResult, Detection } from '@mediapipe/tasks-vision';
-import Detector from './Detector';
+import Detector, { DetectorType } from './Detector';
 
 export default class NewestMediapipeDetector implements Detector {
   private detector: null | FaceDetector = null
   private lastTime = -1
+  public type = DetectorType.MediaPipeVideo
 
   constructor() {
     const initFaceDetector = async () => {
@@ -33,6 +34,8 @@ export default class NewestMediapipeDetector implements Detector {
     if (!this.detector || this.lastTime === videoEl.currentTime) return []
     this.lastTime = videoEl.currentTime
 
+    const now = performance.now()
+
     const { detections } = await new Promise<FaceDetectorResult>(resolve => {
       resolve(this.detector!.detectForVideo(videoEl, videoEl.currentTime))
     });
@@ -40,10 +43,12 @@ export default class NewestMediapipeDetector implements Detector {
     const successfulDetections = detections.filter(detection => detection.boundingBox) as Required<Detection>[]
 
     return successfulDetections.map(({ boundingBox }) => ({
+      detectorType: this.type,
       x: boundingBox.originX,
       y: boundingBox.originY,
       width: boundingBox.width,
-      height: boundingBox.height
+      height: boundingBox.height,
+      time: performance.now() - now
     }))
   }
 }

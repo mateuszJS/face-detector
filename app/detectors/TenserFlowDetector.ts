@@ -1,6 +1,6 @@
 
 import type { createDetector, Face, FaceDetector, SupportedModels } from '@tensorflow-models/face-detection';
-import Detector from './Detector';
+import Detector, { DetectorType } from './Detector';
 
 declare global {
   interface Window {
@@ -26,6 +26,7 @@ function loadScript(src: string) {
 
 export default class TenserFlowDetector implements Detector {
   private detector: null | FaceDetector = null
+  public type = DetectorType.TenserFlow
 
   constructor() {
     const initFaceDetector = async () => {
@@ -56,6 +57,7 @@ export default class TenserFlowDetector implements Detector {
   async detect(videoEl: HTMLVideoElement) {
     if (!this.detector) return []
 
+    const now = performance.now()
     let faces: Face[] = []
     try {
       faces = await this.detector.estimateFaces(videoEl, estimationConfig);
@@ -66,10 +68,12 @@ export default class TenserFlowDetector implements Detector {
     }
 
     return faces.map(({ box }) => ({
+      detectorType: this.type,
       x: box.xMin,
       y: box.yMin,
       width: box.width,
-      height: box.height
+      height: box.height,
+      time: performance.now() - now
     }))
   }
 }

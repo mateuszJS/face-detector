@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import Detector, { Rect } from '@/app/detectors/Detector';
+import { useState, useEffect, useRef } from "react";
+import Detector, { DetectioEntry, DetectorType } from '@/app/detectors/Detector';
 
 export interface RichDetection {
-  coords: Rect
+  data: DetectioEntry
   style: {
     width: string
     height: string
@@ -11,10 +11,20 @@ export interface RichDetection {
   }
 };
 
+export type TestData = Partial<Record<DetectorType, {
+  small: number,
+  medium: number,
+  large: number,
+  totalTime: number,
+  avgTime: number
+}>>
+
 export default function useDetector(videoEl: HTMLVideoElement | null) {
   // TODO: directly update the styles, avoid using any react related state
   const [detections, setDetections] = useState<RichDetection[]>([]);
   const [detector, setDetector] = useState<Detector | null>(null)
+  const [testData, setTestData] = useState<TestData>({})
+  const samplesCount = useRef(0)
 
    useEffect(() => {
     if (!videoEl || !detector) return
@@ -23,7 +33,7 @@ export default function useDetector(videoEl: HTMLVideoElement | null) {
      let isEffectCleared = false
  
      async function renderLoop() {
-       let detectedBoxes: Rect[] = []
+       let detectedBoxes: DetectioEntry[] = []
 
        if (!detector) throw Error('Detector changed value to null')
        if (!videoEl) throw Error('videoEl changed value to null')
@@ -38,7 +48,7 @@ export default function useDetector(videoEl: HTMLVideoElement | null) {
        const height = videoEl.videoHeight
        
        const enhancedDetections = detectedBoxes.map<RichDetection>((box) => ({
-          coords: box,
+          data: box,
           style: {
             left: (box.x / width) * 100 + '%',
             top: (box.y / height) * 100 + '%',
@@ -64,8 +74,49 @@ export default function useDetector(videoEl: HTMLVideoElement | null) {
      }
    }, [videoEl, detector])
 
+   useEffect(() => {
+    if (!videoEl || !detector || detector.type !== DetectorType.TestAll) return
+
+    samplesCount.current++
+
+    const newTestData = {...testData}
+
+    detections.forEach(detection => {
+      if (!(detection.data.detectorType in newTestData)) {
+        newTestData[detection.data.detectorType] = {
+          large: 0,
+          medium: 0,
+          small: 0,
+          totalTime: 0,
+          avgTime: 0,
+        }
+      }
+      newTestData[detection.data.detectorType]!.totalTime += detection.data.time
+      newTestData[detection.data.detectorType]!.avgTime = (
+        newTestData[detection.data.detectorType]!.totalTime / samplesCount.current
+      )
+
+      const size = detection.data.height / videoEl.videoHeight
+      // if (detection.data.detectorType === DetectorType.MediaPipeImage) {
+      //   console.log(size, detection.data.height)
+      // }
+      if (size > 0.25) {
+        newTestData[detection.data.detectorType]!.large++
+      } else if (size > 0.1) {
+        newTestData[detection.data.detectorType]!.medium++
+      } else {
+        newTestData[detection.data.detectorType]!.small++
+      }
+
+    })
+  
+    setTestData(newTestData)
+   }, [detections, detector])
+
    return {
     detections,
-    setDetector
+    setDetector,
+    testData,
+    isTestData: detector?.type === DetectorType.TestAll,
    }
 }

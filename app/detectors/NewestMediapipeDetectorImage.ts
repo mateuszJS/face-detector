@@ -1,6 +1,6 @@
 
 import { FaceDetector, FilesetResolver, Detection } from '@mediapipe/tasks-vision';
-import Detector from './Detector';
+import Detector, { DetectorType } from './Detector';
 
 
 function captureVideo(video: HTMLVideoElement) {
@@ -21,6 +21,7 @@ function captureVideo(video: HTMLVideoElement) {
 
 export default class NewestMediapipeDetector implements Detector {
   private detector: null | FaceDetector = null
+  public type = DetectorType.MediaPipeImage
 
   constructor() {
     const initFaceDetector = async () => {
@@ -47,16 +48,18 @@ export default class NewestMediapipeDetector implements Detector {
 
   async detect(videoEl: HTMLVideoElement) {
     if (!this.detector) return []
-
+    const now = performance.now()
     const canvas = await captureVideo(videoEl)
     const { detections } = this.detector!.detect(canvas)
     const successfulDetections = detections.filter(detection => detection.boundingBox) as Required<Detection>[]
 
     return successfulDetections.map(({ boundingBox }) => ({
+      detectorType: this.type,
       x: boundingBox.originX,
       y: boundingBox.originY,
       width: boundingBox.width,
-      height: boundingBox.height
+      height: boundingBox.height,
+      time: performance.now() - now,
     }))
   }
 }

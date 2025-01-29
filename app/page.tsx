@@ -7,11 +7,12 @@ import Hero from "./components/Hero";
 import { cn } from "@/lib/utils";
 import Sidebar from "./components/Sidebar";
 import useDetector from "./hooks/useDetector";
+import { DetectionsChart } from "./components/Chart";
 
 export default function Home() {
   const [isVideo, setIsVideo] = useState<boolean>(false)
   const videoElRef = useRef<HTMLVideoElement | null>(null)
-  const {detections, setDetector} = useDetector(videoElRef.current)
+  const {detections, setDetector, testData, isTestData} = useDetector(videoElRef.current)
 
   const onUpload = (file: File) => {
     // there is an error when createObjectURL receives something different than File
@@ -29,7 +30,7 @@ export default function Home() {
 
   const exportData = () => {
     console.log(`Data for video at: ${videoElRef.current!.currentTime.toFixed(3)} sec`)
-    console.table(detections.map(detection => detection.coords))
+    console.table(detections.map(detection => detection.data))
   }
 
   const aspectRatio = videoElRef.current
@@ -58,7 +59,11 @@ export default function Home() {
     )}>
       <Hero small={isVideo} />
       <UploadVideo onUpload={onUpload} />
-      {isVideo && <Sidebar setDetector={setDetector} exportData={exportData} />}
+      {isVideo && (
+        <Sidebar setDetector={setDetector} exportData={exportData}>
+          {isTestData && <DetectionsChart testData={testData} />}
+      </Sidebar>
+      )}
       <div
         className={cn(
           'relative',
